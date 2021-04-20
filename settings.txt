@@ -1,0 +1,4 @@
+#Hey! My name is server. Let's go fast
+max-connection=20
+server-port=3345
+exit-chat=/exit
