@@ -1,32 +1,24 @@
-package Server;
+package server;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
 public class ClientHandler implements Runnable {// реализуем интерфейс Runnable, который позволяет работать с потоками
-    static ParserSettingTXT parserSettingTXT = new ParserSettingTXT(new File("settings.txt"));
-    private Server server;// экземпляр нашего сервера
+    private final Server server;// экземпляр нашего сервера
     private PrintWriter outMessage;// исходящее сообщение
     private Scanner inMessage;// входящее собщение
-    private static final String HOST = "localhost";
-    private static final int PORT = parserSettingTXT.getPort();
-    private Socket clientSocket;// клиентский сокет
-    private static int clients_count = 0;// количество клиента в чате, статичное поле
-    LoggerClass loggerClass = new LoggerClass();
+    private final Socket clientSocket;// клиентский сокет
+    private int clients_count = 0;// количество клиента в чате, статичное поле
+    private final LoggerClass log = new LoggerClass();
 
     public ClientHandler(Socket socket, Server server) {// конструктор, который принимает клиентский сокет и сервер
-        try {
-            clients_count++;
-            this.server = server;
-            this.clientSocket = socket;
-            this.outMessage = new PrintWriter(socket.getOutputStream());
-            this.inMessage = new Scanner(socket.getInputStream());
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        clients_count++;
+        this.server = server;
+        this.clientSocket = socket;
+        this.outMessage = getOutMessage();
+        this.inMessage = getInMessage();
     }
 
     // Переопределяем метод run(), который вызывается когда
@@ -40,21 +32,17 @@ public class ClientHandler implements Runnable {// реализуем интер
             while (true) {
                 if (inMessage.hasNext()) {  // Если от клиента пришло сообщение
                     String clientMessage = inMessage.nextLine();
-                    // если клиент отправляет данное сообщение, то цикл прерывается и
-                    // клиент выходит из чата
-                    if (clientMessage.contains("/exit")) {
+                    if (clientMessage.contains("/exit")) { // если клиент отправляет данное сообщение, то цикл прерывается и клиент выходит из чата
                         String nameClient = parserNameClient(clientMessage);
                         String mes = nameClient + " вышел из чата";
                         System.out.println(mes);
                         server.sendMessageToAllClients(mes);
-                        loggerClass.log(mes);
+                        log.log(mes);
                         break;
                     }
-                    // выводим в консоль сообщение
-                    System.out.println(clientMessage);
-                    loggerClass.log(clientMessage);
-                    // отправляем данное сообщение всем клиентам
-                    server.sendMessageToAllClients(clientMessage);
+                    System.out.println(clientMessage); // выводим в консоль сообщение
+                    log.log(clientMessage);
+                    server.sendMessageToAllClients(clientMessage);   // отправляем данное сообщение всем клиентам
                 }
                 // останавливаем выполнение потока на 100 мс
                 Thread.sleep(100);
@@ -64,6 +52,24 @@ public class ClientHandler implements Runnable {// реализуем интер
         } finally {
             this.close();
         }
+    }
+
+    public PrintWriter getOutMessage() {
+        try {
+            outMessage = new PrintWriter(clientSocket.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return outMessage;
+    }
+
+    public Scanner getInMessage() {
+        try {
+            inMessage = new Scanner(clientSocket.getInputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return inMessage;
     }
 
     // отправляем сообщение
@@ -78,8 +84,7 @@ public class ClientHandler implements Runnable {// реализуем интер
 
     // клиент выходит из чата
     public void close() {
-        // удаляем клиента из списка
-        clients_count--;
+        clients_count--;   // удаляем клиента из списка
         server.sendMessageToAllClients("Клиентов в чате = " + clients_count);
         server.removeClient(this);
     }

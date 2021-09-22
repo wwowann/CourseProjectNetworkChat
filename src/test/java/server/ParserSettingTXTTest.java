@@ -1,4 +1,4 @@
-package Server;
+package server;
 
 import org.junit.jupiter.api.Test;
 
@@ -12,12 +12,12 @@ class ParserSettingTXTTest {
 
     @Test
     void notGetPort() {
-       int result = parserSettingTXT.getPort();;
+       int result = parserSettingTXT.getPort();
        assertNotEquals(4444, result);
     }
     @Test
     void getPort() {
-        int result = parserSettingTXT.getPort();;
+        int result = parserSettingTXT.getPort();
         assertEquals(3345, result);
     }
 }

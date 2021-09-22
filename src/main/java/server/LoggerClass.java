@@ -1,4 +1,4 @@
-package Server;
+package server;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -9,7 +9,7 @@ import java.util.Date;
 public class LoggerClass {
     private int counter = 0;
     private final File file = new File("log.txt");
-    private static LoggerClass logger = getInstance();
+    private LoggerClass logger;
 
     public void createFileLog() {
         try {
@@ -37,8 +37,8 @@ public class LoggerClass {
         }
     }
 
-    public static LoggerClass getInstance() {
-        if (logger == null) logger = new LoggerClass();
+    public LoggerClass getInstance() {
+        if (this.logger == null) this.logger = new LoggerClass();
         return logger;
     }
 }

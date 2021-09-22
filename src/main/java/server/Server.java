@@ -1,11 +1,10 @@
-package Server;
+package server;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class Server {
     static ParserSettingTXT parserSettingTXT = new ParserSettingTXT(new File("settings.txt"));
@@ -13,9 +12,14 @@ public class Server {
     private final ArrayList<ClientHandler> clients = new ArrayList<>();// список клиентов, которые будут подключаться к серверу
 
 
+    // сокет клиента, это некий поток, который будет подключаться к серверу
+    // по адресу и порту
     public Server() {
-        // сокет клиента, это некий поток, который будет подключаться к серверу
-        // по адресу и порту
+        new LoggerClass().getInstance().createFileLog();// создается логер и файл логирования
+        start();
+    }
+
+    private void start() {
         Socket clientSocket = null;
         ServerSocket serverSocket = null; // серверный сокет
         try {
@@ -55,4 +59,7 @@ public class Server {
         clients.remove(client);
     }
 
+    public ArrayList<ClientHandler> getClients() {
+        return clients;
+    }
 }
