@@ -9,7 +9,9 @@ import org.mockito.Mockito;
 import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.setRemoveAssertJRelatedElementsFromStackTrace;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 class ServerTest {
     Server server = mock(Server.class);
@@ -18,20 +20,19 @@ class ServerTest {
     ArrayList<ClientHandler> clients = server.getClients();
 
 
-    @After
-    public void nullData() {
-        ArrayList<ClientHandler> clients = new ArrayList<>();
-    }
+//    @After
+//    public void nullData() {
+//        ArrayList<ClientHandler> clients = new ArrayList<>();
+//    }
 
-    @Test
-    void the_Quantity_Of_Clients_Must_Be_Two() {
-        ArrayList<ClientHandler> clients = server.getClients();
-
-        clients.add(clientHandler);
-        clients.add(clientHandler);
-        Mockito.verify(server, Mockito.times(1)).getClients();
+//    @Test
+//    void the_Quantity_Of_Clients_Must_Be_Two() {
+//        ArrayList<ClientHandler> clients = server.getClients();
+//        clients.add(clientHandler);
+//        clients.add(clientHandler);
+//        Mockito.verify(clients., Mockito.times(1)).getClients();
 //        Assertions.assertEquals(2, server.getClients().size());
-    }
+//    }
 
     @Test
     void createClientMustByNotNull() {
@@ -40,23 +41,32 @@ class ServerTest {
 
     @Test
     void testRemoveMethod() {
+        ArrayList<ClientHandler> clients = server.getClients();
         clients.add(clientHandler);
         clients.add(clientHandler);
         server.removeClient(clientHandler);
-        server.getClients().size();
-        Assertions.assertEquals(3,  server.getClients().size());
+        Mockito.verify(server).removeClient(clientHandler);
     }
 
-//    @Ignore
-//    @Test
-//    void sendMessageToAllClients() {
-//        String consoleOut = null;
+    @Test
+    void verifyQuantityClients() {
+        ArrayList<ClientHandler> clients = server.getClients();
+        clients.add(clientHandler);
+        clients.add(clientHandler);
+        Assertions.assertEquals(2, clients.size());
+    }
+
+      @Test
+    void sendMessageToAllClients() {
+          server.sendMessageToAllClients("Hello");
+          verify(server).sendMessageToAllClients("Привет!");
+//          String consoleOut = null;
 //        PrintStream originalOut = System.out;
 //        try {
 //            ByteArrayOutputStream outputStream = new ByteArrayOutputStream(100);
 //            PrintStream capture = new PrintStream(outputStream);
 //            System.setOut(capture);
-////            server.sendMessageToAllClients("Привет!");
+//            server.sendMessageToAllClients("Привет!");
 //            capture.flush();
 //            consoleOut = outputStream.toString();
 //            System.setOut(originalOut);
@@ -65,7 +75,7 @@ class ServerTest {
 //            e.printStackTrace();
 //        }
 //        assertEquals("Привет!", consoleOut);
-//    }
+    }
 //    @Test
 //    void sendMessage() throws IOException {
 //        Server server = mock(Server.class);

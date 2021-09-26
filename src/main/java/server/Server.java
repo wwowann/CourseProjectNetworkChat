@@ -11,15 +11,8 @@ public class Server {
     static final int PORT = parserSettingTXT.getPort();// порт, который будет прослушивать наш сервер
     private final ArrayList<ClientHandler> clients = new ArrayList<>();// список клиентов, которые будут подключаться к серверу
 
-
-    // сокет клиента, это некий поток, который будет подключаться к серверу
-    // по адресу и порту
-    public Server() {
+    public void start() {
         new LoggerClass().getInstance().createFileLog();// создается логер и файл логирования
-        start();
-    }
-
-    private void start() {
         Socket clientSocket = null;
         ServerSocket serverSocket = null; // серверный сокет
         try {
