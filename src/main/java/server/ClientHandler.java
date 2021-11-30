@@ -27,8 +27,7 @@ public class ClientHandler implements Runnable {// реализуем интер
     public void run() {
         try {
             // сервер отправляет сообщения
-            server.sendMessageToAllClients("Новый участник вошёл в чат!");
-            server.sendMessageToAllClients("Клиентов в чате = " + clients_count);
+            server.sendMessageToAllClients("Новый участник вошёл в чат!" + " Клиентов в чате = " + clients_count);
             while (true) {
                 if (inMessage.hasNext()) {  // Если от клиента пришло сообщение
                     String clientMessage = inMessage.nextLine();

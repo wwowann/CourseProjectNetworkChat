@@ -17,7 +17,7 @@ public class ParserSettingTXT {
         this.filename = filename;
     }
 
-    public int getPort() {
+    public Object getData(String flagData) {
         int port = 0;
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(
@@ -25,15 +25,21 @@ public class ParserSettingTXT {
             String line;
             while ((line = reader.readLine()) != null) {
                 stringList.add(line);
-                if (line.startsWith("server-port")) {
+                if (line.startsWith("server-port") && flagData.equals("port")) {
                     int value = line.indexOf("=");
-                    port = Integer.parseInt(line.substring(value + 1));
+                    return Integer.parseInt(line.substring(value + 1));
                 }
+                if (line.startsWith("server-host") && flagData.equals("host")) {
+                    int value = line.indexOf("=");
+                    return line.substring(value + 1);
 
+                }
             }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return port;
+        return null;
     }
 }
