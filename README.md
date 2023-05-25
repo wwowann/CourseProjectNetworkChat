@@ -1,5 +1,3 @@
-![Header](https://github.com/wwowann/wwowann/blob/main/assets/My_foto.png)
-
 ## Курсовая работа "Сетевой чат"
 
 ### Описание проекта
